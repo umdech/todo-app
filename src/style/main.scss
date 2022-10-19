@@ -1,0 +1,46 @@
+@import "_variables";
+@import "_fonts";
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: $bg-color;
+    color: $text-color;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    line-height: 1.5em;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+    padding-top: 1rem;
+    @media (min-width: 768px) {
+        padding-top: 2.625rem;
+    }
+}
+
+.container {
+    max-width: calc(720px + ($gutter * 2));
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: $gutter;
+    padding-right: $gutter;
+    width: 100%;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+input {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+}
