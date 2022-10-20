@@ -1,17 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const InputWrapper = styled.div`
-    background-color: ${({ theme }) => theme.colors.white};
-    border-radius: 2rem;
-    padding: 0 4.5rem 0 1.25rem;
-    position: relative;
-    input {
-        border: none;
-        outline: none !important;
-        padding: 0.845rem 0;
-        width: 100%;
-    }
+const InputField = styled.input`
+    border: none;
+    outline: none !important;
+    padding: 0.845rem 0;
+    width: 100%;
 `
 
 const SaveBtn = styled.button`
@@ -37,10 +31,10 @@ const Input = (props: inputInterface) => {
         return str.trim()
     }
     return (
-        <InputWrapper>
-            <input {...props} />
+        <>
+            <InputField {...props} />
             {clearValue(props.value) && <SaveBtn>Save</SaveBtn>}
-        </InputWrapper>
+        </>
     )
 }
 
