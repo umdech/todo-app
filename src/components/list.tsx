@@ -135,7 +135,7 @@ const DropdownMenu = styled.ul<DropdownProps>`
     margin: 0;
     min-width: 110px;
     opacity: ${({ opened }) => opened ? 1 : 0};
-    padding: 1rem;
+    padding: 0.8rem 0.5rem;
     position: absolute;
     top: 100%;
     transform: ${({ opened }) => opened ? 'translateY(0)' : 'translateY(1rem)'};
@@ -152,14 +152,23 @@ const DropdownMenu = styled.ul<DropdownProps>`
     button {
         background-color: transparent;
         border: none;
+        border-radius: 0.5rem;
         color: ${({ theme }) => theme.colors.text};
         cursor: pointer;
         display: block;
-        padding: 0.1rem 0;
+        padding: 0.4rem 0.5rem;
         text-align: left;
+        transition: all .3s ease-in-out;
         width: 100%;
+        &:hover {
+            background-color: ${({ theme }) => theme.colors.light};
+            color: black;
+        }
         &.delete {
             color: ${({ theme }) => theme.colors.red};
+            &:hover {
+                color: red;
+            }
         }
     }
 `
@@ -267,13 +276,13 @@ const List = ({ id, title, completed }: ITodo) => {
                         <CheckboxContains>
                             <input type="checkbox" defaultChecked={completed} onChange={handleToggleTodo} />
                             <span className="checkbox"></span>
-                            <span className="text">{title}</span>
+                            <span className="text" data-testid="todo">{title}</span>
                         </CheckboxContains>
                         <DropdownContains>
                             <OptionBtn type="button" title="Options" onClick={toggleDropdown} tabIndex={-1}>Option</OptionBtn>
                             <DropdownMenu opened={isDropdownOpened} ref={dropdownRef}>
-                                <li><button type="button" tabIndex={-1} onClick={handleEdit}>Edit</button></li>
-                                <li><button type="button" className="delete" tabIndex={-1} onClick={handleDelete}>Delete</button></li>
+                                <li><button type="button" tabIndex={-1} onClick={handleEdit} data-testid="editBtn">Edit</button></li>
+                                <li><button type="button" className="delete" tabIndex={-1} onClick={handleDelete} data-testid="deleteBtn">Delete</button></li>
                             </DropdownMenu>
                         </DropdownContains>
                     </>
@@ -287,7 +296,8 @@ const List = ({ id, title, completed }: ITodo) => {
                             placeholder="Add your todo..."
                             autoComplete="off"
                             autoFocus
-                            disabled={disabled} />
+                            disabled={disabled}
+                            mode="edit" />
                     </form>
                 )}
             </ListItem>

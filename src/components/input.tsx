@@ -1,6 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
+type ButtonProps = {
+    show: boolean
+}
+
 const InputField = styled.input`
     background-color: ${({ theme }) => theme.colors.white};
     border: none;
@@ -12,13 +16,14 @@ const InputField = styled.input`
     }
 `
 
-const SaveBtn = styled.button`
+const SaveBtn = styled.button<ButtonProps>`
     background-color: ${({ theme }) => theme.colors.secondaryColor};
     border: none;
     border-radius: 1.25rem;
     bottom: 0.25rem;
     color: ${({ theme }) => theme.colors.white};
     cursor: pointer;
+    display: ${({ show }) => show ? 'block' : 'none'};
     min-width: 64px;
     padding: 0 1rem;
     position: absolute;
@@ -30,8 +35,11 @@ const SaveBtn = styled.button`
     }
 `
 
+type Mode = 'add' | 'edit'
+
 interface inputInterface extends React.InputHTMLAttributes<HTMLInputElement> {
-    value: string
+    value: string,
+    mode?: Mode
 }
 
 const Input = (props: inputInterface) => {
@@ -40,8 +48,8 @@ const Input = (props: inputInterface) => {
     }
     return (
         <>
-            <InputField {...props} />
-            {clearValue(props.value) && <SaveBtn disabled={props.disabled}>Save</SaveBtn>}
+            <InputField {...props} data-testid={`${props.mode}NewInput`} />
+            <SaveBtn disabled={props.disabled} show={!!clearValue(props.value)} data-testid={`${props.mode}NewBtn`}>Save</SaveBtn>
         </>
     )
 }

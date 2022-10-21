@@ -59,7 +59,7 @@ const Progress = ({ total, completed }: ProgressProps) => {
             <Box>
                 <h2>Progress</h2>
                 <ProgressBar width={getWidth} />
-                <p>{completed} Completed</p>
+                <p data-testid="completed">{completed} Completed</p>
             </Box>
         </>
     )

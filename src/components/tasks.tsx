@@ -122,7 +122,8 @@ const Tasks = () => {
                         maxLength={50}
                         placeholder="Add your todo..."
                         autoComplete='off'
-                        disabled={disabled} />
+                        disabled={disabled}
+                        mode="add" />
                 </form>
             </InputWrapper>
             {error && <ErrorMessage message={error} />}
