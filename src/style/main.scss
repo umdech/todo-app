@@ -18,8 +18,10 @@ body {
 }
 
 .app {
+    padding-bottom: 1rem;
     padding-top: 1rem;
     @media (min-width: 768px) {
+        padding-bottom: 2.625rem;
         padding-top: 2.625rem;
     }
 }

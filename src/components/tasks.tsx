@@ -1,10 +1,13 @@
 import axios from 'axios'
 import React, { useState } from 'react'
+import { shallowEqual } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import uuid from 'react-uuid'
 import { Dispatch } from 'redux'
 import styled from 'styled-components'
 import { addTodo } from '../actions/actionCreators'
+import ErrorMessage from './errorMessage'
 import Input from './input'
 import Lists from './lists'
 import SelectField from './select'
@@ -15,7 +18,7 @@ type Option = {
 }
 
 const options = [
-    { value: '', label: 'All' },
+    { value: 'all', label: 'All' },
     { value: 'true', label: 'Done' },
     { value: 'false', label: 'Undone' }
 ]
@@ -41,8 +44,21 @@ const InputWrapper = styled.div`
 `
 
 const Tasks = () => {
-    const [filter, setFilter] = useState({ value: '', label: 'All' })
+    const [filter, setFilter] = useState<Option>({ value: 'all', label: 'All' })
     const [value, setValue] = useState('')
+    const [disabled, setDeisable] = useState(false)
+    const [error, setError] = useState('')
+
+    const todos: ITodo[] = useSelector(
+        (state: TodoState) => {
+            if (filter.value !== 'all') {
+                return state.todos.filter((todo: ITodo) => todo.completed === (filter.value === 'true'))
+            } else {
+                return state.todos
+            }
+        },
+        shallowEqual
+    )
 
     const dispatch: Dispatch<any> = useDispatch()
 
@@ -61,19 +77,25 @@ const Tasks = () => {
         const clearValue = value.trim()
         // Check if is not null and length less than 50 characters.
         if (clearValue && (clearValue.length <= 50)) {
+            setDeisable(true)
             const data: ITodo = {
                 id: uuid(),
                 title: clearValue,
                 completed: false
             }
+            dispatch(addTodo(data))
+            // Clear value
+            setValue('')
+            setDeisable(false)
             axios.post(`${process.env.REACT_APP_API_URL}/todos`, data)
-                .then(res => {
-                    if (res.data) {
-                        const data: ITodo = res.data
-                        dispatch(addTodo(data))
-                        // Clear value
-                        setValue('')
-                    }
+                .then(() => {
+                    setError('')
+                })
+                .catch(err => {
+                    setError(err.message)
+                    setTimeout(() => {
+                        setError('')
+                    }, 3000)
                 })
         }
     }
@@ -90,7 +112,7 @@ const Tasks = () => {
                         defaultValue={filter} />
                 </div>
             </HeadingContains>
-            <Lists />
+            <Lists todos={todos} />
             <InputWrapper>
                 <form onSubmit={handleSubmit}>
                     <Input
@@ -99,9 +121,11 @@ const Tasks = () => {
                         onChange={handleInput}
                         maxLength={50}
                         placeholder="Add your todo..."
-                        autoComplete='off' />
+                        autoComplete='off'
+                        disabled={disabled} />
                 </form>
             </InputWrapper>
+            {error && <ErrorMessage message={error} />}
         </>
     )
 }

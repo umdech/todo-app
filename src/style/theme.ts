@@ -9,7 +9,8 @@ declare module "styled-components" {
             light: string,
             dark: string,
             text: string,
-            red: string
+            red: string,
+            disabledColor: string
         },
         breakpoints: {
             sm: string,
@@ -27,7 +28,8 @@ export const theme: DefaultTheme = {
         light: '#F5F5F5',
         dark: '#3B3B3B',
         text: '#2E2E2E',
-        red: '#E07C7C'
+        red: '#E07C7C',
+        disabledColor: '#FAFAFA'
     },
     breakpoints: {
         sm: `(min-width: 576px)`,

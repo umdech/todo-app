@@ -49,14 +49,14 @@ const selectStyles: StylesConfig = {
     })
 }
 
-interface selectInterface {
+type selectProps = {
     name: string,
     options: any,
     onChange: any,
     defaultValue?: any
 }
 
-const SelectField = (props: selectInterface) => {
+const SelectField = (props: selectProps) => {
     return (
         <Select
             {...props}

@@ -1,5 +1,14 @@
 import styled from 'styled-components'
 
+type ProgressProps = {
+    completed: number,
+    total: number
+}
+
+type ProgressType = {
+    width: number
+}
+
 const Box = styled.div`
     background-color: ${({ theme }) => theme.colors.primaryColor};
     border-radius: 1.25rem;
@@ -21,7 +30,7 @@ const Box = styled.div`
     }
 `
 
-const ProgressBar = styled.div`
+const ProgressBar = styled.div<ProgressType>`
     background-color: ${({ theme }) => theme.colors.dark};
     border-radius: 0.25rem;
     height: 0.5rem;
@@ -38,23 +47,19 @@ const ProgressBar = styled.div`
         left: 0;
         position: absolute;
         top: 0;
-        transition: width .3s linear;
-        width: 40%;
+        transition: width .15s ease-in-out;
+        width: ${({ width }) => width}%;
     }
 `
 
-interface progressInterface {
-    done: number,
-    total: number
-}
-
-const Progress = (props: progressInterface) => {
+const Progress = ({ total, completed }: ProgressProps) => {
+    const getWidth: number = ((completed * 100) / total) || 0
     return (
         <>
             <Box>
                 <h2>Progress</h2>
-                <ProgressBar />
-                <p>12 Completed</p>
+                <ProgressBar width={getWidth} />
+                <p>{completed} Completed</p>
             </Box>
         </>
     )

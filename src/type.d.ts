@@ -5,12 +5,19 @@ interface ITodo {
 }
 
 type TodoState = {
-    todos: ITodo[]
+    todos: ITodo[],
+    total: number,
+    completed: number
 }
 
 type TodoAction = {
     type: string,
-    todo: ITodo
+    todo?: ITodo,
+    filter?: any
+}
+
+type TodoProps = {
+    todos: ITodo[]
 }
 
 type DispatchType = (args: TodoAction) => TodoAction

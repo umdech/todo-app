@@ -2,10 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 
 const InputField = styled.input`
+    background-color: ${({ theme }) => theme.colors.white};
     border: none;
     outline: none !important;
     padding: 0.845rem 0;
     width: 100%;
+    &:disabled {
+        background-color: ${({ theme }) => theme.colors.disabledColor};
+    }
 `
 
 const SaveBtn = styled.button`
@@ -20,6 +24,10 @@ const SaveBtn = styled.button`
     position: absolute;
     right: 0.25rem;
     top: 0.25rem;
+    &:disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
 `
 
 interface inputInterface extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -33,7 +41,7 @@ const Input = (props: inputInterface) => {
     return (
         <>
             <InputField {...props} />
-            {clearValue(props.value) && <SaveBtn>Save</SaveBtn>}
+            {clearValue(props.value) && <SaveBtn disabled={props.disabled}>Save</SaveBtn>}
         </>
     )
 }

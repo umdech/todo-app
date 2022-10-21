@@ -1,8 +1,4 @@
-import { ADD_TODO, DELETE_TODO, LOAD_TODOS, TOGGLE_TODO, UPDATE_TODO } from "./actionType"
-
-export const loadTodos = (todos: ITodo[]) => {
-    return { type: LOAD_TODOS, todos }
-}
+import { ADD_TODO, DELETE_TODO, TOGGLE_TODO, UPDATE_TODO } from "./actionType"
 
 export const addTodo = (todo: ITodo) => {
     const action: TodoAction = {
@@ -12,8 +8,12 @@ export const addTodo = (todo: ITodo) => {
     return action
 }
 
-export const toggleTodo = ({ id }: ITodo) => {
-    return { type: TOGGLE_TODO, id }
+export const toggleTodo = (todo: ITodo) => {
+    const action: TodoAction = {
+        type: TOGGLE_TODO,
+        todo
+    }
+    return action
 }
 
 export const updateTodo = (todo: ITodo) => {
@@ -24,6 +24,10 @@ export const updateTodo = (todo: ITodo) => {
     return action
 }
 
-export const deleteTodo = ({ id }: ITodo) => {
-    return { type: DELETE_TODO, id }
+export const deleteTodo = (todo: ITodo) => {
+    const action: TodoAction = {
+        type: DELETE_TODO,
+        todo
+    }
+    return action
 }

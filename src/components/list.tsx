@@ -3,21 +3,20 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'redux'
 import styled from 'styled-components'
-import { updateTodo } from '../actions/actionCreators'
+import { updateTodo, toggleTodo, deleteTodo } from '../actions/actionCreators'
+import ErrorMessage from './errorMessage'
 import Input from './input'
 
-interface DropdownProps {
+type DropdownProps = {
     opened: boolean
 }
 
-interface ListProps {
-    id: string,
-    title: string,
-    completed: boolean
+type ListItemProps = {
+    disabled?: boolean
 }
 
-const ListItem = styled.li`
-    background-color: ${({ theme }) => theme.colors.white};
+const ListItem = styled.li<ListItemProps>`
+    background-color: ${({ disabled, theme }) => (!disabled ? theme.colors.white : theme.colors.disabledColor)};
     border-radius: 2rem;
     margin-bottom: 1rem;
     min-height: 46px;
@@ -165,11 +164,13 @@ const DropdownMenu = styled.ul<DropdownProps>`
     }
 `
 
-const List = ({ id, title, completed }: ListProps) => {
+const List = ({ id, title, completed }: ITodo) => {
     const dropdownRef: React.RefObject<HTMLUListElement> = React.createRef()
     const [value, setValue] = useState(title)
     const [isDropdownOpened, setIsDropdownOpen] = useState(false)
     const [edit, setEdit] = useState(false)
+    const [disabled, setDisable] = useState(false)
+    const [error, setError] = useState('')
 
     const dispatch: Dispatch<any> = useDispatch()
 
@@ -179,6 +180,12 @@ const List = ({ id, title, completed }: ListProps) => {
             if (cur && !cur.contains(e.target as Node)) {
                 setIsDropdownOpen(false)
             }
+        }
+    }
+
+    const handleEscKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            setEdit(false)
         }
     }
 
@@ -198,23 +205,46 @@ const List = ({ id, title, completed }: ListProps) => {
         setIsDropdownOpen(false)
     }
 
+    const handleDelete = (e: React.MouseEvent) => {
+        e.preventDefault();
+        dispatch(deleteTodo({ id, title, completed }))
+        axios.delete(`${process.env.REACT_APP_API_URL}/todos/${id}`)
+    }
+
+    const handleToggleTodo = (e: React.FormEvent<HTMLInputElement>) => {
+        const { checked } = e.currentTarget
+        const data: ITodo = {
+            id,
+            title,
+            completed: checked
+        }
+        dispatch(toggleTodo(data))
+        axios.patch(`${process.env.REACT_APP_API_URL}/todos/${data.id}`, { completed: data.completed })
+    }
+
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault()
         const clearValue = value.trim()
         // Check if is not null and length less than 50 characters.
         if (clearValue && (clearValue.length <= 50)) {
+            setDisable(true)
             const data: ITodo = {
                 id,
                 title: clearValue,
                 completed
             }
-            axios.patch(`${process.env.REACT_APP_API_URL}/todos/${id}`, { title: data.title })
-                .then(res => {
-                    if (res.data) {
-                        const data: ITodo = res.data
-                        dispatch(updateTodo(data))
-                        setEdit(false)
-                    }
+            dispatch(updateTodo(data))
+            setEdit(false)
+            setDisable(false)
+            axios.patch(`${process.env.REACT_APP_API_URL}/todos/${data.id}`, { title: data.title })
+                .then(() => {
+                    setError('')
+                })
+                .catch(err => {
+                    setError(err.message)
+                    setTimeout(() => {
+                        setError('')
+                    }, 3000)
                 })
         }
     }
@@ -222,41 +252,47 @@ const List = ({ id, title, completed }: ListProps) => {
     useEffect(
         () => {
             document.addEventListener('mousedown', handleClickOutside)
+            document.addEventListener('keydown', handleEscKeyDown)
             return () => {
                 document.removeEventListener('mousedown', handleClickOutside)
+                document.removeEventListener('keydown', handleEscKeyDown)
             }
         }
     )
     return (
-        <ListItem>
-            {!edit ? (
-                <>
-                    <CheckboxContains>
-                        <input type="checkbox" defaultChecked={completed} />
-                        <span className="checkbox"></span>
-                        <span className="text">{title}</span>
-                    </CheckboxContains>
-                    <DropdownContains>
-                        <OptionBtn type="button" title="Options" onClick={toggleDropdown} tabIndex={-1}>Option</OptionBtn>
-                        <DropdownMenu opened={isDropdownOpened} ref={dropdownRef}>
-                            <li><button type="button" tabIndex={-1} onClick={handleEdit}>Edit</button></li>
-                            <li><button type="button" className="delete" tabIndex={-1}>Delete</button></li>
-                        </DropdownMenu>
-                    </DropdownContains>
-                </>
-            ) : (
-                <form onSubmit={handleSubmit}>
-                    <Input
-                        name="task"
-                        value={value}
-                        onChange={handleInput}
-                        maxLength={50}
-                        placeholder="Add your todo..."
-                        autoComplete="off"
-                        autoFocus />
-                </form>
-            )}
-        </ListItem>
+        <>
+            <ListItem disabled={disabled}>
+                {!edit ? (
+                    <>
+                        <CheckboxContains>
+                            <input type="checkbox" defaultChecked={completed} onChange={handleToggleTodo} />
+                            <span className="checkbox"></span>
+                            <span className="text">{title}</span>
+                        </CheckboxContains>
+                        <DropdownContains>
+                            <OptionBtn type="button" title="Options" onClick={toggleDropdown} tabIndex={-1}>Option</OptionBtn>
+                            <DropdownMenu opened={isDropdownOpened} ref={dropdownRef}>
+                                <li><button type="button" tabIndex={-1} onClick={handleEdit}>Edit</button></li>
+                                <li><button type="button" className="delete" tabIndex={-1} onClick={handleDelete}>Delete</button></li>
+                            </DropdownMenu>
+                        </DropdownContains>
+                    </>
+                ) : (
+                    <form onSubmit={handleSubmit}>
+                        <Input
+                            name="task"
+                            value={value}
+                            onChange={handleInput}
+                            maxLength={50}
+                            placeholder="Add your todo..."
+                            autoComplete="off"
+                            autoFocus
+                            disabled={disabled} />
+                    </form>
+                )}
+            </ListItem>
+            {error && <ErrorMessage message={error} />}
+        </>
     )
 }
 

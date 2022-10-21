@@ -1,42 +1,47 @@
-import { ADD_TODO, DELETE_TODO, LOAD_TODOS, TOGGLE_TODO, UPDATE_TODO } from "../actions/actionType"
+import { ADD_TODO, DELETE_TODO, TOGGLE_TODO, UPDATE_TODO } from "../actions/actionType"
 
 const initialState: TodoState = {
-    todos: []
+    todos: [],
+    total: 0,
+    completed: 0
 }
 
-const todosReducer = (state: TodoState = initialState, action: TodoAction) => {
+const todosReducer = (state: TodoState = initialState, action: TodoAction): TodoState => {
     switch (action.type) {
-        case LOAD_TODOS:
-            return state
         case ADD_TODO:
             const newTodo: ITodo = {
-                id: action.todo.id,
-                title: action.todo.title,
-                completed: action.todo.completed
+                id: (action.todo ? action.todo.id : ''),
+                title: (action.todo ? action.todo.title : ''),
+                completed: (action.todo ? action.todo.completed : false)
             }
             return {
                 ...state,
-                todos: state.todos.concat(newTodo)
+                todos: state.todos.concat(newTodo),
+                total: state.todos.length + 1,
+                completed: state.todos.filter((todo: ITodo) => todo.completed === true).length + ((action.todo ? (action.todo.completed ? 1 : 0) : 0))
             }
         case TOGGLE_TODO:
-            return state
-        case UPDATE_TODO:
-            let todos: ITodo[] = state.todos
-            const result = todos.map((todo: ITodo) => (todo.id === action.todo.id
-                ? { ...todo, title: action.todo.title }
-                : todo))
             return {
-                todos: result
+                ...state,
+                todos: state.todos.map((todo: ITodo) => (todo.id === (action.todo ? action.todo.id : null)
+                    ? { ...todo, completed: action.todo ? action.todo.completed : !todo.completed }
+                    : todo)),
+                completed: (state.completed + (action.todo ? (action.todo.completed ? 1 : -1) : -1))
+            }
+        case UPDATE_TODO:
+            return {
+                ...state,
+                todos: state.todos.map((todo: ITodo) => (todo.id === (action.todo ? action.todo.id : '')
+                    ? { ...todo, title: (action.todo ? action.todo.title : '') }
+                    : todo))
             }
         case DELETE_TODO:
-            return state
-
-        // case UPDATE_TODO:
-        //     return state.todos.map(todo => (todo.id === action.todo.id)
-        //         ? { ...todo, title: action.todo.title }
-        //         : todo)
-        // case DELETE_TODO:
-        //     return state.todos.filter(todo => todo.id !== action.todo.id)
+            return {
+                ...state,
+                todos: state.todos.filter((todo: ITodo) => todo.id !== (action.todo ? action.todo.id : '')),
+                total: state.todos.length - 1,
+                completed: state.completed - (action.todo ? (action.todo.completed ? 1 : 0) : 0)
+            }
     }
     return state
 }
