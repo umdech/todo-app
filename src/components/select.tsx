@@ -29,6 +29,7 @@ const selectStyles: StylesConfig = {
         marginBottom: '0.3rem',
         paddingBottom: '0.1rem',
         paddingTop: '0.1rem',
+        transition: 'all .15s ease-in-out',
         '&:last-child': {
             marginBottom: 0
         },
