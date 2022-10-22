@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import styled from 'styled-components'
 import { addTodo } from './actions/actionCreators';
-import ErrorMessage from './components/errorMessage';
 
 import Progress from './components/progress';
 import Tasks from './components/tasks';
+import ErrorMessage from './components/errorMessage';
 
 const Box = styled.div`
     background-color: ${({ theme }) => theme.colors.light};

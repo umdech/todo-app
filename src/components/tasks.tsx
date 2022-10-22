@@ -103,7 +103,10 @@ const Tasks = () => {
     return (
         <>
             <HeadingContains>
+                {/* Heading */}
                 <Heading>Tasks</Heading>
+
+                {/* Filter */}
                 <div>
                     <SelectField
                         name="filter"
@@ -112,7 +115,11 @@ const Tasks = () => {
                         defaultValue={filter} />
                 </div>
             </HeadingContains>
+
+            {/* Task items */}
             <Lists todos={todos} />
+
+            {/* Add new todo input */}
             <InputWrapper>
                 <form onSubmit={handleSubmit}>
                     <Input

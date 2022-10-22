@@ -19,6 +19,7 @@ const Box = styled.div`
     }
     h2 {
         color: ${({ theme }) => theme.colors.white};
+        font-size: 28px;
         font-weight: 500;
         margin: 0;
         margin-bottom: 1rem;

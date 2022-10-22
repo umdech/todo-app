@@ -298,6 +298,7 @@ const List = ({ id, title, completed }: ITodo) => {
                         </DropdownContains>
                     </>
                 ) : (
+                    // Edit mode
                     <form onSubmit={handleSubmit}>
                         <Input
                             name="task"

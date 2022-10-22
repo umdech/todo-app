@@ -6,10 +6,11 @@ const selectStyles: StylesConfig = {
         backgroundColor: '#ffffff',
         border: 'none',
         borderRadius: '0.5rem',
+        boxShadow: 'none',
         cursor: 'pointer',
         fontSize: 13,
         minHeight: 30,
-        minWidth: 110
+        minWidth: 110,
     }),
     menu: (styles) => ({
         ...styles,
