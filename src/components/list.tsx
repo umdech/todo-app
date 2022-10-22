@@ -35,6 +35,7 @@ const CheckboxContains = styled.label`
         &:checked ~ .checkbox {
             &:before {
                 background-color: ${({ theme }) => theme.colors.secondaryColor};
+                border-radius: 0.375rem;
                 transform: scale(1);
             }
         }
@@ -63,8 +64,8 @@ const CheckboxContains = styled.label`
             background-image: url("data:image/svg+xml,%3Csvg id='a' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10.21 7.88'%3E%3Cpath d='M3.33,5.87L1,3.54l-1,1,3.33,3.33L10.21,1l-1-1L3.33,5.87Z' style='fill:%23fff;'/%3E%3C/svg%3E");
             background-position: center center;
             background-repeat: no-repeat;
-            background-size: 60%;
-            border-radius: 0.375rem;
+            background-size: 0.625rem;
+            border-radius: 50%;
             bottom: 0;
             display: block;
             left: 0;
