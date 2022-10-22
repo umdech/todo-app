@@ -211,13 +211,24 @@ const List = ({ id, title, completed }: ITodo) => {
     const handleEdit = (e: React.MouseEvent) => {
         e.preventDefault();
         setEdit(true)
+
+        // Close deopdown menu
         setIsDropdownOpen(false)
+
+        // Reset value
+        setValue(title)
     }
 
     const handleDelete = (e: React.MouseEvent) => {
         e.preventDefault();
         dispatch(deleteTodo({ id, title, completed }))
         axios.delete(`${process.env.REACT_APP_API_URL}/todos/${id}`)
+            .catch(err => {
+                setError(err.message)
+                setTimeout(() => {
+                    setError('')
+                }, 3000)
+            })
     }
 
     const handleToggleTodo = (e: React.FormEvent<HTMLInputElement>) => {
@@ -274,14 +285,14 @@ const List = ({ id, title, completed }: ITodo) => {
                 {!edit ? (
                     <>
                         <CheckboxContains>
-                            <input type="checkbox" defaultChecked={completed} onChange={handleToggleTodo} />
+                            <input type="checkbox" defaultChecked={completed} onChange={handleToggleTodo} data-testid="checkbox" />
                             <span className="checkbox"></span>
                             <span className="text" data-testid="todo">{title}</span>
                         </CheckboxContains>
                         <DropdownContains>
                             <OptionBtn type="button" title="Options" onClick={toggleDropdown} tabIndex={-1}>Option</OptionBtn>
                             <DropdownMenu opened={isDropdownOpened} ref={dropdownRef}>
-                                <li><button type="button" tabIndex={-1} onClick={handleEdit} data-testid="editBtn">Edit</button></li>
+                                <li><button type="button" tabIndex={-1} onClick={handleEdit} data-testid="editBtnOpt">Edit</button></li>
                                 <li><button type="button" className="delete" tabIndex={-1} onClick={handleDelete} data-testid="deleteBtn">Delete</button></li>
                             </DropdownMenu>
                         </DropdownContains>

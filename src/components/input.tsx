@@ -48,8 +48,8 @@ const Input = (props: inputInterface) => {
     }
     return (
         <>
-            <InputField {...props} data-testid={`${props.mode}NewInput`} />
-            <SaveBtn disabled={props.disabled} show={!!clearValue(props.value)} data-testid={`${props.mode}NewBtn`}>Save</SaveBtn>
+            <InputField {...props} data-testid={`${props.mode}Input`} />
+            <SaveBtn disabled={props.disabled} show={!!clearValue(props.value)} data-testid={`${props.mode}Btn`}>Save</SaveBtn>
         </>
     )
 }
